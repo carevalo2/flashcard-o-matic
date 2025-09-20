@@ -1,40 +1,15 @@
 {
   "decks": [
     {
-      "id": 1,
-      "name": "aaa",
-      "description": "aaa"
-    },
-    {
       "name": "Mock Study Deck 13",
       "description": "ha",
       "id": 2
+    },
+    {
+      "name": "s",
+      "description": "a",
+      "id": 3
     }
   ],
-  "cards": [
-    {
-      "front": "1",
-      "back": "1d",
-      "deckId": 1,
-      "id": 1
-    },
-    {
-      "front": "2",
-      "back": "2d",
-      "deckId": 1,
-      "id": 2
-    },
-    {
-      "front": "3",
-      "back": "3d",
-      "deckId": 1,
-      "id": 3
-    },
-    {
-      "front": "aaa",
-      "back": "aaa",
-      "deckId": 1,
-      "id": 4
-    }
-  ]
+  "cards": []
 }

@@ -1,24 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { readDeck } from "../../utils/api";
+import React, { useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { DeckContext } from "./DeckInfo";
 
 function Study() {
   const { deckId } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [deck, setDeck] = useState([]);
+  const { deck } = useContext(DeckContext);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    readDeck(deckId, abortController.signal).then((d) => {
-      setDeck(d);
-    });
-    return () => abortController.abort();
-  }, [deckId, location.key]);
-
-  const cards = deck.cards;
+  const cards = deck?.cards;
 
   if (cards) {
     if (cards.length < 3) {

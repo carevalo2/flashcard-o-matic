@@ -1,41 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { updateDeck, readDeck } from "../../utils/api";
+import { updateDeck } from "../../utils/api";
+import { DeckContext } from "./DeckInfo";
 
 function EditDeck() {
   const { deckId } = useParams();
   const navigate = useNavigate();
-  const [deck, setDeck] = useState(null);
+  const { deck, refreshDeckData } = useContext(DeckContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const abortController = new AbortController();
-    setLoading(true);
-    readDeck(deckId, abortController.signal).then((d) => {
-      setDeck(d);
-      setName(d.name || "");
-      setDescription(d.description || "");
-      setLoading(false);
-    });
-    return () => abortController.abort();
-  }, [deckId]);
+    if (deck) {
+      setName(deck.name || "");
+      setDescription(deck.description || "");
+    }
+  }, [deck]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await updateDeck({ id: Number(deckId), name, description });
     setLoading(true);
-    readDeck(deckId).then((d) => {
-      setDeck(d);
-      setName(d.name || "");
-      setDescription(d.description || "");
-      setLoading(false);
+    try {
+      await updateDeck({ id: Number(deckId), name, description });
+      refreshDeckData();
       navigate(`/decks/${deckId}`);
-    });
+    } catch (error) {
+      console.error("Error updating deck:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading || !deck) return <div>Loading...</div>;
+  if (!deck) return <div>Loading...</div>;
 
   return (
     <div className="container mt-4">
@@ -70,8 +67,8 @@ function EditDeck() {
         >
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
-          Submit
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Saving..." : "Submit"}
         </button>
       </form>
     </div>
